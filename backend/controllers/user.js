@@ -3,12 +3,27 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+const ciphering = email => {
+	const cipher = crypto.createCipheriv(process.env.ALGORITHM, process.env.CIPHER_KEY);
+	console.log(email)
+	const cipheredEmail = cipher.update(email, 'utf8', 'hex');
+	cipheredEmail += cipher.final('hex');
+	return cipheredEmail;
+}
+
+const deciphering = ciphered => {
+	const decipher = crypo.createDecipheriv('aes256-cbc', process.env.CIPHER_KEY);
+	const decipheredEmail = decipher.update(ciphered, 'utf8', 'hex');
+	decipheredEmail += decipher.final('utf8');
+}
 
 exports.singup = (req, res, next) => {
 	bcrypt.hash(req.body.password, 10)
 	.then(hash => {
 		const user = new User({
-			email: req.body.email,
+			email: ciphering(req.body.email),
 			password: hash,
 			role: 'user'
 		})
@@ -20,7 +35,7 @@ exports.singup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-	User.findOne({email: req.body.email})
+	User.findOne({email: ciphering(req.body.email)})
 	.then(user=>{
 		if(!user)
 		{

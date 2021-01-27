@@ -17,7 +17,7 @@ mongoose.connect(process.env.DB_CONNECT,
 	console.log(process.env.APP_NAME + " est en service");
 })
 .catch(()=>console.log('Connexion à mongoDB échoué !'));
-//Connection ?la base de donn?s
+//Connection à la base de donnés
 
 const app = express();
 

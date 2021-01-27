@@ -1,3 +1,6 @@
 cours/
-backend/node_modules
 frontend/
+backend/node_modules
+backend/images
+backend/env/.env.dev
+backend/env/.env.prod
