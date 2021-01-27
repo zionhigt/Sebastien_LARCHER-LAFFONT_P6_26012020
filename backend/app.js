@@ -7,15 +7,17 @@ const sauceRoutes = require('./routes/sauces')
 
 const path = require('path');
 
-
-mongoose.connect('mongodb+srv://root:110690@cluster0.wvn0x.mongodb.net/piquante?retryWrites=true&w=majority', 
+mongoose.connect(process.env.DB_CONNECT, 
 {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 })
-.then(()=>console.log('Connexion à mongoDB réussis !'))
-.catch(()=>console.log('Connexion à mongoDB échouée !'));
-//Connection à la base de données
+.then(()=>{
+	console.log('Connexion Ã  mongoDB rÃ©ussis !');
+	console.log(process.env.APP_NAME + " est en service");
+})
+.catch(()=>console.log('Connexion Ã  mongoDB Ã©chouÃ© !'));
+//Connection ?la base de donn?s
 
 const app = express();
 
@@ -25,7 +27,7 @@ app.use((req, res, next)=>{
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 	next();
 });
-// Definis les header acceptés
+// Definis les header accept?
 
 app.use(bodyParser.json());
 // Middleware pour parser les bodies 
