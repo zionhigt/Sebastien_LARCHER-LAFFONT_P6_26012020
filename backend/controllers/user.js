@@ -6,8 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const RSA = require('node-rsa')
 
-const NodeRSA = require('node-rsa');
-
 const key = new RSA({b: process.env.BUFFER_SIZE});
 key.importKey(process.env.PRIVATE_KEY, 'pkcs1');
 key.importKey(process.env.PUBLIC_KEY, 'pkcs1-public');
@@ -30,8 +28,7 @@ exports.singup = (req, res, next) => {
 	.then(hash => {
 		const user = new User({
 			email: ciphering(req.body.email),
-			password: hash,
-			role: 'user'
+			password: hash
 		})
 		user.save()
 		.then(()=>res.status(201).json({message: "Utilisateur crée !"}))
