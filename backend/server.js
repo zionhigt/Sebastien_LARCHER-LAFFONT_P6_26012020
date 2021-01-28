@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./app');
+const fs = require('fs');
 
 // retourne un port en nombre entier et en base decimal
 const normalizePort = val => {
@@ -42,7 +43,13 @@ const errorHandler = error => {
 			throw error;
 	}
 };
-const server = http.createServer(app);//initialise un serveur http
+
+// Des certificat autosignés sont disponible pour la passage au protocole https
+const options = {
+  key: fs.readFileSync('key.pem', 'utf8'),
+  cert: fs.readFileSync('server.crt', 'utf8')
+};
+const server = http.createServer(app);//initialise un serveur http/ Ajoutez les opitions en argument pour securiser le protocole
 
 server.on('error', errorHandler);// Callback en cas d'erreurs
 server.on('listening', ()=>{

@@ -7,6 +7,7 @@ const safePattern = {
 	name: {grep: /^/ , type: "string", default: ""},
 	manufacturer: {grep: /\S/ , type: "string", default: ""},
 	mainPepper: {grep: /\S/ , type: "string", default: ""},
+	description: {grep: /\S/ , type: "string", default: ""},
 	imageUrl: {grep: /^/ , type: "string", default: ""},
 	heat: {grep: /^/ , type: "number", default: 0},
 	like: {grep: /^/ , type: "number", default: 0}
@@ -22,26 +23,20 @@ module.exports.secure = where => {
 			{
 				// On verifie quil n'y a pas de payload json dans la requête
 				JSON.parse(req[where][i]);
-				// On garde la valeur si la donnée est parser en tand que nombre entier
+				// On garde la valeur si la donnée est parsé en tant que nombre entier
 				// On definie sa valeur par default si un autre type de donnée est rencontré
-				req[where][i] = (typeof(JSON.parse(req[where][i])) == "number") ? req[where][i] : safePattern[i].default;
+				// On definie sa valeur par default si le pattern n'est pas respecté
+				req[where][i] = (typeof(JSON.parse(req[where][i])) == "number" 
+								&& typeof(req[where][i]) == safePattern[i].type 
+								&& safePattern[i].grep.test(req[where][i])) ? req[where][i] : safePattern[i].default;
 			}
 			catch
 			{
 
-				if(typeof(req[where][i]) === safePattern[i].type)
-				{
-					// Si la donnée est du type attendu....
-					// On garde la valeur si elle match avec sa regex respective
-					// On definie sa valeur par default si le pattern n'est pas respecté
-
-					req[where][i] = safePattern[i].grep.test(req[where][i]) ? req[where][i] : safePattern[i].default;
-				}
-				else
-				{
-					// Si non on definie la valeur par default
-					req[where][i] = safePattern[i].default;
-				}
+				// Si la donnée est du type attendu....
+				// On garde la valeur si elle match avec sa regex respective
+				// On definie sa valeur par default si le pattern n'est pas respecté
+				req[where][i] = (typeof(req[where][i]) == safePattern[i].type && safePattern[i].grep.test(req[where][i])) ? req[where][i] : safePattern[i].default;
 			}
 		} 
 		// On passe au controlleur suivant avec une requête formatée

@@ -9,6 +9,7 @@ exports.postOne = (req, res, next) =>{
 	delete sauceObjet._id;
 	const sauce = new Sauce(
 	{
+		userId: req.body.userId,
 		...sauceObjet,
 		imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
 	});
@@ -36,13 +37,23 @@ exports.getOneById = (req, res, next) =>{
 };
 
 // Une mis à jour de la sauce
-exports.updateOneById = (req, res, next) =>{
-	const sauceObjet =JSON.parse(req.body.sauce);
-	const sauce = new Sauce(
+exports.updateOneById = (req, res, next) => {
+	let sauceObjet;
+	try
 	{
-		...sauceObjet,
-		imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
-	});
+		JSON.parse(req.body.sauce);
+		sauceObjet = {
+			...JSON.parse(req.body.sauce),
+			imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
+
+		};
+	}
+	catch
+	{
+		sauceObjet = {
+			...req.body
+		};
+	}
 	Sauce.findOne({_id: req.params.id})
 	.then(sauce => {
 		const filename = sauce.imageUrl.split('/images/')[1];
@@ -57,7 +68,7 @@ exports.updateOneById = (req, res, next) =>{
 
 // Détruit la resource en base de donneé
 exports.deleteOneById = (req, res, next) =>{
-	const sauceObjet =JSON.parse(req.body.sauce);
+	
 	Sauce.findOne({_id: req.params.id})
 	.then(sauce => {
 		const filename = sauce.imageUrl.split('/images/')[1];

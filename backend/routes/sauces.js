@@ -38,15 +38,15 @@ router.post('/:id/like',
 router.put('/:id',
 	stringParser.secure('body'),
 	stringParser.secure('params'),
-	access.access('admin'),
+	access.access('user'),
+	multer,
 	auth,
 	saucesCtrl.updateOneById);
 
 router.delete('/:id',
 	stringParser.secure('body'),
 	stringParser.secure('params'),
-	access.access('admin'),
-	auth,
+	access.access('user'),
 	saucesCtrl.deleteOneById);
 // Defini les chaînes de middelware pour chaque routes sauces (access, auth, controlleur)
 

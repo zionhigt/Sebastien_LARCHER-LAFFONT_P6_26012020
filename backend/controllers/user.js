@@ -3,23 +3,29 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
-const ciphering = email => {
-	const cipher = crypto.createCipheriv(process.env.ALGORITHM, process.env.CIPHER_KEY);
-	console.log(email)
-	const cipheredEmail = cipher.update(email, 'utf8', 'hex');
-	cipheredEmail += cipher.final('hex');
-	return cipheredEmail;
-}
+const RSA = require('node-rsa')
+
+const NodeRSA = require('node-rsa');
+
+const key = new RSA({b: process.env.BUFFER_SIZE});
+key.importKey(process.env.PRIVATE_KEY, 'pkcs1');
+key.importKey(process.env.PUBLIC_KEY, 'pkcs1-public');
 
 const deciphering = ciphered => {
-	const decipher = crypo.createDecipheriv('aes256-cbc', process.env.CIPHER_KEY);
-	const decipheredEmail = decipher.update(ciphered, 'utf8', 'hex');
-	decipheredEmail += decipher.final('utf8');
+	const deciphered = key.decryptPublic(ciphered, 'utf8');
+	return deciphered;
+
+}
+const ciphering = buffer => {
+
+	const ciphered = key.encryptPrivate(buffer, 'base64');
+	return ciphered;
 }
 
+
 exports.singup = (req, res, next) => {
+	
 	bcrypt.hash(req.body.password, 10)
 	.then(hash => {
 		const user = new User({
@@ -35,6 +41,8 @@ exports.singup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
+
+
 	User.findOne({email: ciphering(req.body.email)})
 	.then(user=>{
 		if(!user)
@@ -53,7 +61,7 @@ exports.login = (req, res, next) => {
 					{userId: user._id},
 					process.env.SECRET_RANDOM_TOKEN,
 					{expiresIn: '24h'}
-				)
+					)
 			});
 		})
 		.catch(error => res.status(500).json({ error }));
