@@ -2,5 +2,8 @@ cours/
 frontend/
 backend/node_modules
 backend/images
+backend/csr.pem
+backend/key.pem
+backend/server.crt
 backend/env/.env.dev
 backend/env/.env.prod
