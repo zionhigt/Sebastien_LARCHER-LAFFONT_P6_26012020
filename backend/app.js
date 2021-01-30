@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauces')
 
+const limiter = require('./middleware/apiLimiter');
+
 const path = require('path');
 
 mongoose.connect(process.env.DB_CONNECT, 
@@ -28,13 +30,13 @@ app.use((req, res, next)=>{
 	next();
 });
 // Definis les header accept?
-
 app.use(bodyParser.json());
 // Middleware pour parser les bodies 
 
+
 /////////////// Joining routes ///////////////////////
 app.use('/images', express.static(path.join(__dirname, 'images')));// Definie le dossier images en static
-app.use('/api/auth', userRoutes);// connecte les routes auth
+app.use('/api/auth', limiter, userRoutes);// connecte les routes auth
 app.use('/api/sauces', sauceRoutes);// connecte les routes sauces
 
 module.exports = app;

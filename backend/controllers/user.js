@@ -40,6 +40,7 @@ exports.singup = (req, res, next) => {
 exports.login = (req, res, next) => {
 
 
+	console.log(req.body);
 	User.findOne({email: ciphering(req.body.email)})
 	.then(user=>{
 		if(!user)
@@ -65,3 +66,6 @@ exports.login = (req, res, next) => {
 	})
 	.catch(error => res.status(500).json({ error }));
 };
+
+
+// hydra -v -V -l "larcher501@gmail.com" -P "../PASS.txt" -s 3000 localhost http-post-form "/api/auth/login:{\"email\"\:\"^USER^\",\"password\"\:\"^PASS^\"}:S=404:H=Accept: application/json, text/plain, */*:H=Accept-Language: en-US,en;q=0.5:H=Accept-Encoding: gzip, deflate:H=Referer: http\://localhost:4201/:H=Origin: http\://localhost:4201:H=Connection: keep-alive"

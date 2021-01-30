@@ -15,7 +15,7 @@ const safePattern = {
 
 module.exports.secure = where => {
 	return (req, res, next) => {
-
+		
 		const reqKeys = Object.keys(req[where]);//On récupere toutes les clés de l'object à analiser
 		for(let i of reqKeys)
 		{

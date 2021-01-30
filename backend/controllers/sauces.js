@@ -55,15 +55,23 @@ exports.updateOneById = (req, res, next) => {
 		};
 	}
 	Sauce.findOne({_id: req.params.id})
-	.then(sauce => {
-		const filename = sauce.imageUrl.split('/images/')[1];
-		fs.unlink("images/"+ filename, () => {
-			Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id})
-			.then(() => res.status(200).json({ message: 'Objet modifié !'}))
-			.catch(error => res.status(400).json({ error }));
-		});
-	})
-	.catch(error => res.status(500).json({ error }));
+		.then(sauce => {
+			if(sauce.userId == sauceObjet.userId)
+			{
+				const filename = sauce.imageUrl.split('/images/')[1];
+				fs.unlink("images/"+ filename, () => {
+					Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id})
+					.then(() => res.status(200).json({ message: 'Objet modifié !'}))
+					.catch(error => res.status(400).json({ error }));
+				});
+
+			}
+			else
+			{
+				res.status(403).json({error: "Unauthorized !"})
+			}
+		})
+		.catch(error => res.status(500).json({ error }));
 };
 
 // Détruit la resource en base de donneé
