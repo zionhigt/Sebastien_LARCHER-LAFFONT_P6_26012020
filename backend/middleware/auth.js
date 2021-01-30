@@ -28,9 +28,9 @@ module.exports = (req, res, next) =>
 			throw  "Not allowed";
 		}
 	}
-	catch(error)
+	catch(e)
 	{
-		res.status(403).json({  error });
+		res.status(401).json({  error });
 	}
 
 }

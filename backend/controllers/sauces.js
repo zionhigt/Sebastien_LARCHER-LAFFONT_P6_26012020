@@ -15,7 +15,7 @@ exports.postOne = (req, res, next) =>{
 	});
 	sauce.save(sauce)
 	.then(()=> res.status(201).json({message: "Objet enregistré"}))
-	.catch(error => res.status(400).json({error}));
+	.catch(error => res.status(500).json({error}));
 };
 
 // Recupére toutes les sauces
@@ -55,23 +55,32 @@ exports.updateOneById = (req, res, next) => {
 		};
 	}
 	Sauce.findOne({_id: req.params.id})
-		.then(sauce => {
-			if(sauce.userId == sauceObjet.userId)
+	.then(sauce => {
+		if(sauce.userId == sauceObjet.userId)
+		{
+			if(req.file != undefined)
 			{
 				const filename = sauce.imageUrl.split('/images/')[1];
 				fs.unlink("images/"+ filename, () => {
 					Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id})
 					.then(() => res.status(200).json({ message: 'Objet modifié !'}))
-					.catch(error => res.status(400).json({ error }));
+					.catch(error => res.status(403).json({ error }));
 				});
-
 			}
 			else
 			{
-				res.status(403).json({error: "Unauthorized !"})
+				Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id})
+					.then(() => res.status(200).json({ message: 'Objet modifié !'}))
+					.catch(error => res.status(403).json({ error }));
 			}
-		})
-		.catch(error => res.status(500).json({ error }));
+
+		}
+		else
+		{
+			res.status(401).json({ error })
+		}
+	})
+	.catch(error => res.status(500).json({ error }));
 };
 
 // Détruit la resource en base de donneé
@@ -83,7 +92,7 @@ exports.deleteOneById = (req, res, next) =>{
 		fs.unlink("images/"+ filename, () => {
 			Sauce.deleteOne({ _id: req.params.id })
 			.then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-			.catch(error => res.status(400).json({ error }));
+			.catch(error => res.status(403).json({ error }));
 		});
 	})
 	.catch(error => res.status(500).json({ error }));

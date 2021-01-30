@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauces')
 
 const limiter = require('./middleware/apiLimiter');
+const helmet = require('helmet');
 
 const path = require('path');
 
@@ -23,6 +24,8 @@ mongoose.connect(process.env.DB_CONNECT,
 
 const app = express();
 
+app.use(helmet());
+
 app.use((req, res, next)=>{
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -36,7 +39,7 @@ app.use(bodyParser.json());
 
 /////////////// Joining routes ///////////////////////
 app.use('/images', express.static(path.join(__dirname, 'images')));// Definie le dossier images en static
-app.use('/api/auth', limiter, userRoutes);// connecte les routes auth
+app.use('/api/auth', userRoutes);// connecte les routes auth
 app.use('/api/sauces', sauceRoutes);// connecte les routes sauces
 
 module.exports = app;

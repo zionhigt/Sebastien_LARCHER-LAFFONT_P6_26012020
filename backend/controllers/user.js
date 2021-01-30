@@ -4,31 +4,16 @@ const User = require('../models/User');
 
 const jwt = require('jsonwebtoken');
 
-const RSA = require('node-rsa')
-
-const key = new RSA({b: process.env.BUFFER_SIZE});
-key.importKey(process.env.PRIVATE_KEY, 'pkcs1');
-key.importKey(process.env.PUBLIC_KEY, 'pkcs1-public');
-
-const deciphering = ciphered => {
-	const deciphered = key.decryptPublic(ciphered, 'utf8');
-	return deciphered;
-
-}
-const ciphering = buffer => {
-
-	const ciphered = key.encryptPrivate(buffer, 'base64');
-	return ciphered;
-}
-
+const mask = require('../mask/mask');
 
 exports.singup = (req, res, next) => {
 	
 	bcrypt.hash(req.body.password, 10)
 	.then(hash => {
 		const user = new User({
-			email: ciphering(req.body.email),
-			password: hash
+			email: mask.ciphering(req.body.email),
+			password: hash,
+			role: 'user'
 		})
 		user.save()
 		.then(()=>res.status(201).json({message: "Utilisateur crée !"}))
@@ -41,7 +26,7 @@ exports.login = (req, res, next) => {
 
 
 	console.log(req.body);
-	User.findOne({email: ciphering(req.body.email)})
+	User.findOne({email: mask.ciphering(req.body.email)})
 	.then(user=>{
 		if(!user)
 		{

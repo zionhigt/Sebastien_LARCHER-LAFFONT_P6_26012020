@@ -73,7 +73,7 @@ module.exports.likeHandler = (req, res, next) =>
 			.then((sauce) => {
 				res.status(200).json({message: "Done !"})
 			})
-			.catch(error => {res.status(500).json({ error })});
+			.catch(error => {res.status(403).json({ error })});
 			// Les likes/dislikes de la sauce sont mis à jour
 		})
 		.catch(error => {res.status(404).json({ error })});
