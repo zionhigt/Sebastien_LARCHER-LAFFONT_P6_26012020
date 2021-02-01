@@ -16,8 +16,12 @@ mongoose.connect(process.env.DB_CONNECT,
 	useUnifiedTopology: true
 })
 .then(()=>{
-	console.log('Connexion à mongoDB réussis !');
-	console.log(process.env.APP_NAME + " est en service");
+	if(process.env.NODE_ENV != 'test')
+	{
+		console.log('Connexion à mongoDB réussis !');
+		console.log(process.env.APP_NAME + " est en service");
+
+	}
 })
 .catch(()=>console.log('Connexion à mongoDB échoué !'));
 //Connection à la base de donnés

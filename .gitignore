@@ -7,6 +7,7 @@ backend/csr.pem
 backend/key.pem
 backend/server.crt
 backend/env/.env.dev
+backend/env/.env.test
 backend/env/.env.prod
 package.json
 package-lock.json

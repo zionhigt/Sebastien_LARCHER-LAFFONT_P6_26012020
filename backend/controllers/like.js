@@ -3,6 +3,7 @@ const Sauce = require('../models/Sauce');
 
 module.exports.likeHandler = (req, res, next) =>
 {
+	console.log(req.body, req.params.id)
 	// On cherche l'utilisateur en BDD
 	User.findOne({_id: req.body.userId})
 	.then(user => {
