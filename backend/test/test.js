@@ -2,6 +2,7 @@ const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const server = require('../app');
 const User = require('../models/User');
@@ -147,7 +148,8 @@ describe('Sauce', () => {
 			chai.request(server).post('/api/sauces/test')
 			.set('content-type', 'application/json')
 			.attach('image', './images/test.jpg', 'test.jpg')
-			.field('sauce', JSON.stringify(postSauce)).end((err, res) => {
+			.field('sauce', JSON.stringify(postSauce))
+			.end((err, res) => {
 				res.should.have.status(201);
 				Sauce.findOne({name: postSauce}, sauce => {
 					sauce.value.name.should.be.eql(postSauce.name);
@@ -162,6 +164,9 @@ describe('Sauce', () => {
 		            sauce.value.usersLiked.should.be.eql(postSauce.usersLiked);
 		            sauce.value.usersDisliked.should.be.eql(postSauce.usersDisliked);
 					done();
+					// console.log(sauce.value)
+					// const filename = sauce.value.imageUrl.split('/images/')[1];
+					// fs.unlink('images/'+filename, done);
 				});
 			});
 		});
@@ -203,8 +208,7 @@ describe('Sauce', () => {
 
 		    	chai.request(server).put('/api/sauces/test/'+postSauce._id)
 		    	.set('content-type', 'application/json')
-		    	.attach('image', './images/test.jpg', 'test.jpg')
-		    	.field('sauce', JSON.stringify(postSauceModified)).end((err, res) => {
+		    	.send(JSON.stringify(postSauceModified)).end((err, res) => {
 		    		res.should.have.status(200);
 		    		done();
 		    	});
@@ -247,4 +251,56 @@ describe('Sauce', () => {
 });
 
 
+describe('POST/ stringParser', () => {
+	it("Doit controler les données entrantes", done => {
+		const data = [{test: "test"}, 14, "test", ["test"]];
+		// const testJSON = data[];
+		// const testINT = data[];
+		// const testSTRING = data[];
+		// const testARRAY = data[];
+
+		const body = {
+			userId: "",
+			email: "",
+			password: "",
+			name: "",
+			manufacturer: "",
+			mainPepper: "",
+			description: "",
+			imageUrl: "",
+			heat: "",
+			like: "" 
+		};
+
+		const secureBody = {
+			userId: "string",
+			email: "string",
+			password: "string",
+			name: "string",
+			manufacturer: "string",
+			mainPepper: "string",
+			description: "string",
+			imageUrl: "string",
+			heat: "number",
+			like: "number" 
+		};
+
+
+
+		for(i of data)
+		{
+			for(j of Object.keys(body))
+			{
+				body[j] = i
+			}
+			chai.request(server).post('/api/sauces/test/data/' + i)
+			.send(body)
+			.end((err, res) => {
+				res.body.body[j].should.be.a(secureBody[j]);
+			});
+		}
+
+		done();
+	});
+});
 

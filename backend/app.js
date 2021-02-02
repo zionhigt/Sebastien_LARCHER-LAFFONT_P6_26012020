@@ -3,9 +3,13 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user');
-const sauceRoutes = require('./routes/sauces')
+const sauceRoutes = require('./routes/sauces');
+const testRoutes = require('./routes/test');
+
+const logStream = require('./log/logStream');
 
 const limiter = require('./middleware/apiLimiter');
+const morgan = require('morgan');
 const helmet = require('helmet');
 
 const path = require('path');
@@ -30,6 +34,8 @@ const app = express();
 
 app.use(helmet());
 
+app.use(morgan('combined', {stream: logStream}));
+
 app.use((req, res, next)=>{
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -40,10 +46,15 @@ app.use((req, res, next)=>{
 app.use(bodyParser.json());
 // Middleware pour parser les bodies 
 
+if(process.env.NODE_ENV == "test")
+{
+	app.use('/api/sauces/test', testRoutes);
+}
 
 /////////////// Joining routes ///////////////////////
 app.use('/images', express.static(path.join(__dirname, 'images')));// Definie le dossier images en static
 app.use('/api/auth', userRoutes);// connecte les routes auth
 app.use('/api/sauces', sauceRoutes);// connecte les routes sauces
+
 
 module.exports = app;

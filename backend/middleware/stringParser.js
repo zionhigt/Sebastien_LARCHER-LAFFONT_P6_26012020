@@ -10,7 +10,8 @@ const safePattern = {
 	description: {grep: /\S/ , type: "string", default: ""},
 	imageUrl: {grep: /^/ , type: "string", default: ""},
 	heat: {grep: /^/ , type: "number", default: 0},
-	like: {grep: /^/ , type: "number", default: 0}
+	like: {grep: /^/ , type: "number", default: 0},
+	
 };
 
 module.exports.secure = where => {
@@ -34,9 +35,17 @@ module.exports.secure = where => {
 			{
 
 				// Si la donnée est du type attendu....
-				// On garde la valeur si elle match avec sa regex respective
+				// On garde la valeur si elle match avec sa regex
 				// On definie sa valeur par default si le pattern n'est pas respecté
-				req[where][i] = (typeof(req[where][i]) == safePattern[i].type && safePattern[i].grep.test(req[where][i])) ? req[where][i] : safePattern[i].default;
+				try
+				{
+
+					req[where][i] = (typeof(req[where][i]) == safePattern[i].type && safePattern[i].grep.test(req[where][i])) ? req[where][i] : safePattern[i].default;
+				}
+				catch
+				{
+					res.satus(403).json({error: "Bad request !"});
+				}
 			}
 		} 
 		// On passe au controlleur suivant avec une requête formatée

@@ -17,4 +17,16 @@ const storage = multer.diskStorage({
 		callback(null, name + Date.now() + '.' + extension);
 	}
 });
-module.exports = multer({ storage }).single('image');
+
+const memory  = multer.memoryStorage();
+
+if(process.env.NODE_ENV == "test")
+{
+	module.exports = multer({ memory }).single('image');	
+
+}
+else
+{
+	module.exports = multer({ storage }).single('image');	
+
+}
