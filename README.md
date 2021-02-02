@@ -8,6 +8,7 @@ __backend__
 ```>backend>
 		mkdir images
 		npm install
+		npm run dev/prod/test
 ```
 *Make based env/env template env.ENV files into env directory*
 
