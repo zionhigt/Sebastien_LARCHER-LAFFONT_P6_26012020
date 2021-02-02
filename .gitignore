@@ -1,7 +1,7 @@
 cours/
 backend/node_modules
 node_modules
-backend/images
+backend/images/
 backend/log/save-log
 backend/csr.pem
 backend/key.pem
