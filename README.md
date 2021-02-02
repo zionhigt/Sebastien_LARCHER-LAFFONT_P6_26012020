@@ -5,7 +5,7 @@ __Frontend__
 Update has arrived. It lost his legs !*
 
 __backend__
-```backend>
+```>backend>
 		mkdir images
 		npm install
 ```
@@ -15,7 +15,7 @@ __Additions__
 
 **Brute force**
 ```>
-	node simpleBruteForce **-P** /path/dictionary.txt **-u** brute@force.test*
+	node simpleBruteForce -P /path/dictionary.txt -u brute@force.test
 ```
 **Get all the file lignes off as a password to try and send an asynchronous loging request for each of them.**
 **with a -u USER as ID**
