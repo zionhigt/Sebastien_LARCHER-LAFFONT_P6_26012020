@@ -1,13 +1,19 @@
-To launch it properly:
-	
-	- Type "npm install" into backend directory
-	- Type "mkdir images" into backend directory
-	- Make based env/env template env.ENV files into env directory
+## To launch it properly:
 
+	__Frontend__
+		*Once upon a time. There was a litle [Angular project](https://github.com/OpenClassrooms-Student-Center/dwj-projet6.git) wich run anywhere !
+		Update has arrived. It lost his legs !*
 
-Hi! Here is my before last training projet.
+	__backend__
+		*- Type "npm install" into backend directory*
+		*- Type "mkdir images" into backend directory*
+		*- Make based env/env template env.ENV files into env directory*
 
-I have to learn and write API's features to be able to make the frontend part run as well ! 
+## Introduce
+
+__Hi! Here is my before last training projet.__
+
+*I have to learn and write API's features to be able to make the frontend part run as well ! 
 This API will be safe with OWASP fundation security recomandations.
 It's going to respecting RGPD rules.
-And it has been built as a REST API. hihi
+And it has been built as a REST API.*
