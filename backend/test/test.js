@@ -8,6 +8,8 @@ const server = require('../app');
 const User = require('../models/User');
 const Sauce = require('../models/Sauce');
 
+const mask = require('../mask/mask')
+
 chai.use(chaiHttp);
 
 describe('Sauce', () => {
@@ -31,7 +33,7 @@ describe('Sauce', () => {
 	    it('Doit retournée tout les items quand la BDD contient deux items', (done) => { // Test qui vérifie qu'on a le bon résultat lorsqu'il y a deux items dans la base de données
 	      const firstSauce= new Sauce({
 	        name : 'firstSauce',
-	        manufacturer : 'test1',
+	        manufacturer : mask.ciphering('test1'),
 	        userId : mongoose.Types.ObjectId(),
 	        description : 'testing',
 	        mainPepper : 'test',
@@ -44,7 +46,7 @@ describe('Sauce', () => {
 	      });
 	      const secondSauce = new Sauce({
 	       	name : 'SecondeSauce',
-	        manufacturer : 'test2',
+	        manufacturer : mask.ciphering('test2'),
 	        userId : mongoose.Types.ObjectId(),
 	        description : 'testing',
 	        mainPepper : 'test',
@@ -62,7 +64,7 @@ describe('Sauce', () => {
 	            res.body.should.be.a('array');
 	            res.body.length.should.be.eql(2);
 	            res.body[0].name.should.be.eql(firstSauce.name);
-	            res.body[0].manufacturer.should.be.eql(firstSauce.manufacturer);
+	            res.body[0].manufacturer.should.be.eql(mask.deciphering(firstSauce.manufacturer));
 	            res.body[0].userId.should.be.eql(firstSauce.userId);
 	            res.body[0].description.should.be.eql(firstSauce.description);
 	            res.body[0].mainPepper.should.be.eql(firstSauce.mainPepper);
@@ -74,7 +76,7 @@ describe('Sauce', () => {
 	            res.body[0].usersDisliked.should.be.eql(firstSauce.usersDisliked);
 
 	            res.body[1].name.should.be.eql(secondSauce.name);
-	            res.body[1].manufacturer.should.be.eql(secondSauce.manufacturer);
+	            res.body[1].manufacturer.should.be.eql(mask.deciphering(secondSauce.manufacturer));
 	            res.body[1].userId.should.be.eql(secondSauce.userId);
 	            res.body[1].description.should.be.eql(secondSauce.description);
 	            res.body[1].mainPepper.should.be.eql(secondSauce.mainPepper);
@@ -94,7 +96,7 @@ describe('Sauce', () => {
 	    	const testSauce = new Sauce({
 		        _id : mongoose.Types.ObjectId(),
 		       	name : 'uniqueSauce',
-		        manufacturer : 'test',
+		        manufacturer : mask.ciphering('test'),
 		        userId : mongoose.Types.ObjectId(),
 		        description : 'testing',
 		        mainPepper : 'test',
@@ -110,7 +112,7 @@ describe('Sauce', () => {
 	    			res.should.have.status(200);
 		            res.body.should.be.a('Object');
 		            res.body.name.should.be.eql(testSauce.name);
-		            res.body.manufacturer.should.be.eql(testSauce.manufacturer);
+		            res.body.manufacturer.should.be.eql(mask.deciphering(testSauce.manufacturer));
 		            res.body.userId.should.be.eql(testSauce.userId);
 		            res.body.description.should.be.eql(testSauce.description);
 		            res.body.mainPepper.should.be.eql(testSauce.mainPepper);

@@ -1,18 +1,21 @@
 const Sauce = require('../models/Sauce');
 
+const mask = require('../mask/mask')
+
 const fs = require('fs');
 
 
 // CREE une sauce
 exports.postOne = (req, res, next) =>{
 	const sauceObjet = JSON.parse(req.body.sauce);
-	delete sauceObjet._id;
 	const sauce = new Sauce(
 	{
 		userId: req.body.userId,
 		...sauceObjet,
+		manufacturer: mask.ciphering(sauceObjet.manufacturer),
 		imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
 	});
+	delete sauce._id;
 	sauce.save(sauce)
 	.then(()=> res.status(201).json({message: "Objet enregistré"}))
 	.catch(error => res.status(500).json({error}));
@@ -22,7 +25,12 @@ exports.postOne = (req, res, next) =>{
 exports.getAll = (req, res, next) =>{
 	Sauce.find()
 	.then(sauces => {
-		res.status(200).json(sauces);
+		for(i in sauces)
+		{
+			const manufacturer = mask.deciphering(sauces[i].manufacturer);
+			sauces[i].manufacturer = manufacturer;
+		}
+		res.status(200).json(Object.values(sauces));
 	})
 	.catch(error => {res.status(404).json({ error })});
 };
@@ -31,6 +39,9 @@ exports.getAll = (req, res, next) =>{
 exports.getOneById = (req, res, next) =>{
 	Sauce.findOne({_id: req.params.id})
 	.then(sauce => {
+		const manufacturer = mask.deciphering(sauce.manufacturer);
+
+		sauce.manufacturer = manufacturer;
 		res.status(200).json(sauce);
 	})
 	.catch(error => {res.status(404).json({ error })});
@@ -54,6 +65,7 @@ exports.updateOneById = (req, res, next) => {
 			...req.body
 		};
 	}
+	sauceObjet.manufacturer = mask.ciphering(sauceObjet.manufacturer);
 	Sauce.findOne({_id: req.params.id})
 	.then(sauce => {
 		if(sauce.userId == sauceObjet.userId)
