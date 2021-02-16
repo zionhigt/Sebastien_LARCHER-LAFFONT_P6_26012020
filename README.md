@@ -6,9 +6,9 @@ Update has arrived. It lost his legs !*
 
 __backend__
 ```>backend>
-		mkdir images
-		npm install
-		npm run dev/prod/test
+mkdir images
+npm install
+npm run dev/prod/test
 ```
 *Make based env/env template env.ENV files into env directory*
 
@@ -16,13 +16,13 @@ __Additions__
 
 **Brute force**
 ```>
-	node simpleBruteForce -P /path/dictionary.txt -u brute@force.test
+node simpleBruteForce -P /path/dictionary.txt -u brute@force.test
 ```
-**Get all the file lignes off as a password to try and send an asynchronous loging request for each of them.**
+**Get all the file lignes off as a password to try and send an asynchronous login request for each of them.**
 **with a -u USER as ID**
 	
 
-## Introduce
+## Introducing
 
 __Hi! Here is my before last training project.__
 
